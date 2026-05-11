@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Files</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem("themeMode") || "light";
+  </script>
+  <link rel="stylesheet" href="/assets/styles.css?v=8">
+  <meta name="theme-color" content="#151a21">
+  <meta name="application-name" content="Local Files">
+  <meta name="mobile-web-app-capable" content="yes">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Locations">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64">
+            <rect x="14" y="13" width="36" height="38" rx="7" fill="currentColor"></rect>
+            <path d="M22 27h20M22 35h20M22 43h12" stroke="#ffffff" stroke-width="5" stroke-linecap="round"></path>
+            <circle cx="43" cy="43" r="4" fill="#ffffff"></circle>
+          </svg>
+        </span>
+        <span>Local Files</span>
+      </div>
+
+      <div class="sidebar-meta">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span>Private network</span>
+      </div>
+
+      <div class="section-label">Locations</div>
+      <nav class="place-list" id="places"></nav>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div class="nav-buttons" aria-label="Folder navigation">
+          <button class="icon-button" id="backButton" type="button" title="Back" aria-label="Back">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+          </button>
+          <button class="icon-button" id="forwardButton" type="button" title="Forward" aria-label="Forward">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+          <button class="icon-button" id="rootButton" type="button" title="This PC" aria-label="This PC">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"></path><path d="M6 10v9h12v-9"></path><path d="M10 19v-5h4v5"></path></svg>
+          </button>
+          <button class="icon-button" id="upButton" type="button" title="Up one folder" aria-label="Up one folder">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg>
+          </button>
+        </div>
+
+        <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
+
+        <div class="toolbar">
+          <label class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5L21 21"></path></svg>
+            <input id="search" placeholder="Search" autocomplete="off">
+          </label>
+
+          <input class="file-input" id="fileInput" type="file" multiple>
+          <button class="tool-button" id="uploadButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"></path><path d="M5 11l7-7 7 7"></path><path d="M4 20h16"></path></svg>
+            <span>Upload</span>
+          </button>
+          <button class="tool-button" id="pasteTextButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6"></path><path d="M9 3h6v4H9z"></path><path d="M6 6H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1"></path></svg>
+            <span>Text</span>
+          </button>
+          <button class="tool-button" id="pasteFilesButton" type="button" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6"></path><path d="M9 3h6v4H9z"></path><path d="M8 12h8"></path><path d="M8 16h5"></path><path d="M6 6H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1"></path></svg>
+            <span>Paste</span>
+          </button>
+          <button class="tool-button" id="logsButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"></path><path d="M7 15l3-3-3-3"></path><path d="M13 15h4"></path></svg>
+            <span>Logs</span>
+          </button>
+          <label class="ui-switch" title="Dark mode">
+            <input id="themeSwitch" type="checkbox" aria-label="Switch to dark mode">
+            <span class="slider" aria-hidden="true">
+              <span class="circle"></span>
+            </span>
+          </label>
+
+          <div class="view-switch" role="group" aria-label="View mode">
+            <button class="view-button" id="gridMode" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4z"></path><path d="M13 4h7v7h-7z"></path><path d="M4 13h7v7H4z"></path><path d="M13 13h7v7h-7z"></path></svg>
+              <span>Grid</span>
+            </button>
+            <button class="view-button" id="detailsMode" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12"></path><path d="M8 12h12"></path><path d="M8 18h12"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg>
+              <span>Details</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="summary">
+        <div class="summary-main">
+          <div class="summary-title" id="summaryTitle">This PC</div>
+          <div class="summary-path" id="statusRight"></div>
+        </div>
+        <div class="summary-stats">
+          <span id="summaryCount"></span>
+          <span class="status-pill" id="statusLeft">Ready</span>
+        </div>
+      </div>
+
+      <main class="content">
+        <div id="listWrap"></div>
+      </main>
+    </section>
+  </div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-window">
+      <div class="modal-bar">
+        <div class="modal-title" id="modalTitle"></div>
+        <a class="modal-open" id="modalOpen" target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7"></path><path d="M10 14L21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path></svg>
+          <span>Open</span>
+        </a>
+        <button class="icon-button" id="modalClose" type="button" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal text-modal" id="textModal" hidden>
+    <form class="text-window" id="textForm">
+      <div class="modal-bar">
+        <div class="modal-title">Save text</div>
+        <button class="modal-open" type="submit">Save</button>
+        <button class="icon-button" id="textModalClose" type="button" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="text-editor">
+        <input id="textFileName" placeholder="note.txt" autocomplete="off">
+        <textarea id="textContent" placeholder="Paste text here"></textarea>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal" id="propertiesModal" hidden>
+    <div class="properties-window">
+      <div class="modal-bar">
+        <div class="modal-title" id="propertiesTitle">Properties</div>
+        <button class="icon-button" id="propertiesClose" type="button" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="properties-body" id="propertiesBody"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="logsModal" hidden>
+    <div class="logs-window">
+      <div class="modal-bar">
+        <div class="modal-title">Continuous logs</div>
+        <button class="modal-open" id="refreshLogsButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path><path d="M3 21v-5h5"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M16 8h5V3"></path></svg>
+          <span>Refresh</span>
+        </button>
+        <button class="icon-button" id="logsClose" type="button" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="logs-body" id="logsBody"></div>
+    </div>
+  </div>
+
+  <script src="/assets/app.js?v=8" defer></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[2026-05-12 00:02:23] Watchdog started on port 9211.
+[2026-05-12 00:02:24] Started server PID 21804. Restart count: 1.
+[2026-05-12 00:03:43] Watchdog started on port 9213.
+[2026-05-12 00:03:43] Started server PID 3064. Restart count: 1.
+[2026-05-12 00:04:50] Watchdog started on port 9215.
+[2026-05-12 00:04:51] Started server PID 17684. Restart count: 1.
+[2026-05-12 00:04:57] Started server PID 25472. Restart count: 2.
+[2026-05-12 00:05:18] Watchdog started on port 8081.
+[2026-05-12 00:05:18] Started server PID 1648. Restart count: 1.
+[2026-05-12 00:15:18] Watchdog started on port 8081.
+[2026-05-12 00:15:18] Started server PID 27028. Restart count: 1.

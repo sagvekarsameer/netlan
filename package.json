@@ -1,0 +1,12 @@
+{
+  "name": "local-file-streamer",
+  "version": "1.0.0",
+  "description": "Simple local network file and video server.",
+  "main": "server.js",
+  "scripts": {
+    "start": "python start_server.py",
+    "server": "node server.js --this-pc",
+    "stop": "python stop_server.py"
+  },
+  "license": "MIT"
+}
