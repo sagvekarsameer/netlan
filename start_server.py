@@ -334,13 +334,14 @@ def local_ips():
 def show_urls(server_pid, watchdog_pid=0):
     state = read_state()
     restarts = int(state.get("restarts") or 0)
+    port = int(state.get("port") or PORT)
     print(f"Local Files server is running. PID: {server_pid or 'starting'}")
     if watchdog_pid:
         print(f"Watchdog PID: {watchdog_pid}")
     print(f"Restarts: {restarts}")
-    print(f"PC:    http://localhost:{PORT}")
+    print(f"PC:    http://localhost:{port}")
     for ip in local_ips():
-        print(f"Phone: http://{ip}:{PORT}")
+        print(f"Phone: http://{ip}:{port}")
 
 
 def pause(message):
