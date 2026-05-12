@@ -1,5 +1,6 @@
 import json
 import os
+import base64
 import socket
 import subprocess
 import sys
@@ -18,6 +19,8 @@ WATCHDOG_LOG_FILE = APP_DIR / "watchdog.log"
 PORT = int(os.environ.get("PORT", "8080"))
 CHECK_SECONDS = int(os.environ.get("WATCHDOG_CHECK_SECONDS", "5"))
 HEALTH_FAILURE_LIMIT = int(os.environ.get("WATCHDOG_FAILURE_LIMIT", "3"))
+AUTH_USER = os.environ.get("AUTH_USER", "admin")
+AUTH_PASSWORD = os.environ.get("AUTH_PASSWORD", "")
 
 
 def main():
@@ -142,10 +145,22 @@ def start_server_process(node):
 
 def is_http_healthy():
     try:
-        with urllib.request.urlopen(f"http://127.0.0.1:{PORT}/api/places", timeout=2) as response:
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{PORT}/api/places",
+            headers=health_headers(),
+        )
+        with urllib.request.urlopen(request, timeout=2) as response:
             return response.status == 200
     except (OSError, urllib.error.URLError):
         return False
+
+
+def health_headers():
+    if not AUTH_PASSWORD:
+        return {}
+
+    token = base64.b64encode(f"{AUTH_USER}:{AUTH_PASSWORD}".encode("utf-8")).decode("ascii")
+    return {"Authorization": f"Basic {token}"}
 
 
 def find_node():

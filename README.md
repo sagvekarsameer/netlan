@@ -40,11 +40,49 @@ http://192.168.1.10:8080
 
 Open that link on your phone browser.
 
+### Optional login
+
+To require a shared username and password before the file browser opens, set:
+
+```powershell
+$env:AUTH_USER="admin"
+$env:AUTH_PASSWORD="choose-a-strong-password"
+npm start
+```
+
+If you use `node server.js ...` directly, the same environment variables work
+there too. `AUTH_USER` defaults to `admin`, and setting `AUTH_PASSWORD` turns
+login on.
+
+### Cheapest remote access
+
+For access from outside your home Wi-Fi without exposing the port publicly,
+use Tailscale on the PC and on the phone:
+
+1. Install Tailscale on the Windows PC that runs this server.
+2. Install Tailscale on your phone.
+3. Sign in on both devices with the same Tailscale account.
+4. Leave this server running with `AUTH_PASSWORD` set.
+5. Open the server from your phone using the PC's Tailscale IP, for example:
+
+```text
+http://100.x.y.z:8080
+```
+
+If MagicDNS is enabled on your tailnet, you can also use the device name
+instead of the IP address.
+
+This is usually the lowest-cost safe option because Tailscale's Personal plan is
+free for personal use, and it gives your devices a private network without
+opening inbound ports.
+
 ## Notes
 
 - Your phone and PC must be on the same Wi-Fi.
 - Keep the PC awake while watching.
 - If Windows Firewall asks, allow Node.js on private networks.
+- If you expose the server outside your home network, keep the password on and
+  use a tunnel or VPN rather than opening the port directly.
 - For best mobile playback, MP4 files work best.
 - Use `Grid` for previews or `Details` for a file-list view.
 - Images and PDFs can be opened with the `Preview` button.
@@ -54,7 +92,8 @@ Open that link on your phone browser.
 - Use `Info` to view file/folder properties.
 - Use `Logs` to watch live server and watchdog logs from the browser.
 - Use the theme button to switch between light and dark mode.
-- This is for your local network only. Do not expose it to the internet.
+- This is safest on your local network or behind a tunnel/VPN.
+- Tailscale is the recommended low-cost remote-access option for this project.
 - Whole-PC mode can only open folders your Windows user is allowed to read.
 
 ## Options

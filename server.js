@@ -1,5 +1,6 @@
 const fs = require("fs");
 const http = require("http");
+const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
 const { URL } = require("url");
@@ -10,6 +11,10 @@ const HOST = "0.0.0.0";
 const ROOT_ARG = getArg("--root") || getRootArg();
 const THIS_PC = process.argv.includes("--this-pc") || !ROOT_ARG || ["this-pc", "pc"].includes(String(ROOT_ARG).toLowerCase());
 const ROOT = THIS_PC ? "" : path.resolve(ROOT_ARG);
+const AUTH_USER = process.env.AUTH_USER || "admin";
+const AUTH_PASSWORD = process.env.AUTH_PASSWORD || "";
+const AUTH_REALM = process.env.AUTH_REALM || "Local Files";
+const AUTH_ENABLED = Boolean(AUTH_PASSWORD);
 const PUBLIC_DIR = path.join(__dirname, "public");
 const STATE_FILE = path.join(__dirname, "server_state.json");
 const LOG_FILES = [
@@ -54,6 +59,10 @@ const PDF_EXTENSIONS = new Set([".pdf"]);
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+
+    if (!authorizeRequest(req, res)) {
+      return;
+    }
 
     if (isRoute(url, "/") || isRoute(url, "/browse")) {
       return sendHtml(res);
@@ -108,6 +117,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   const urls = getLocalUrls(PORT);
   console.log(`Sharing: ${THIS_PC ? "This PC" : ROOT}`);
+  console.log(`Auth: ${AUTH_ENABLED ? `enabled for ${AUTH_USER}` : "disabled"}`);
   console.log(`Open on this PC: http://localhost:${PORT}`);
   for (const url of urls) {
     console.log(`Open on phone:   ${url}`);
@@ -686,6 +696,66 @@ async function sendFile(url, req, res) {
 
 function sendHtml(res) {
   return sendStaticFile(res, path.join(PUBLIC_DIR, "index.html"), "no-store");
+}
+
+function authorizeRequest(req, res) {
+  if (!AUTH_ENABLED) {
+    return true;
+  }
+
+  const credentials = parseBasicAuth(req.headers.authorization || "");
+  if (
+    credentials &&
+    safeEqual(credentials.user, AUTH_USER) &&
+    safeEqual(credentials.password, AUTH_PASSWORD)
+  ) {
+    return true;
+  }
+
+  res.writeHead(401, {
+    "WWW-Authenticate": `Basic realm="${escapeHeaderValue(AUTH_REALM)}", charset="UTF-8"`,
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store"
+  });
+  res.end("Authentication required.");
+  return false;
+}
+
+function parseBasicAuth(header) {
+  const match = String(header).match(/^Basic\s+(.+)$/i);
+  if (!match) {
+    return null;
+  }
+
+  try {
+    const decoded = Buffer.from(match[1], "base64").toString("utf8");
+    const separator = decoded.indexOf(":");
+    if (separator < 0) {
+      return null;
+    }
+
+    return {
+      user: decoded.slice(0, separator),
+      password: decoded.slice(separator + 1)
+    };
+  } catch {
+    return null;
+  }
+}
+
+function safeEqual(left, right) {
+  const leftBuffer = Buffer.from(String(left));
+  const rightBuffer = Buffer.from(String(right));
+
+  if (leftBuffer.length !== rightBuffer.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function escapeHeaderValue(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 function sendAppIcon(res) {
