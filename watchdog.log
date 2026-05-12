@@ -12,3 +12,5 @@
 [2026-05-12 00:49:05] Health check failed for PID 27028 (1/3).
 [2026-05-12 00:49:12] Health check failed for PID 27028 (2/3).
 [2026-05-12 00:49:35] Health check failed for PID 27028 (1/3).
+[2026-05-12 10:50:06] Watchdog started on port 8080.
+[2026-05-12 10:50:07] Started server PID 20128. Restart count: 2.
